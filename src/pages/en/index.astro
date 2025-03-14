@@ -1,0 +1,31 @@
+---
+import "../../styles/global.css";
+import Layout from "../../layouts/Layout.astro";
+import ContactForm from "../../components/ContactForm.astro";
+import Footer from "../../components/Footer.astro";
+import { translations } from "../../translations/i18n.ts";
+
+const lang = "en"; // Define el idioma de la carpeta
+const t = translations[lang];
+
+---
+
+<Layout title={t.formTitle} description={t.description} lang={lang}>
+  <main class="min-h-screen flex items-center justify-center bg-image">
+    <section id="contact" class="container mx-auto px-4 py-16">
+      <div class="flex flex-wrap md:flex-nowrap gap-6">
+        <div class="w-full md:w-1/2">
+          <!-- Agrega info de contacto -->
+          <div class="flex items-center justify-center h-full">
+            <img src="./../assets/latcom-logo-white.webp" alt="Logo">
+          </div>
+        </div>
+        <div class="w-full md:w-1/2">
+          <!-- Agrega formulario -->
+          <ContactForm lang={lang} />
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>

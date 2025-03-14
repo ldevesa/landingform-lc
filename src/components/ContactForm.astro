@@ -1,0 +1,175 @@
+---
+export interface Props {
+  lang: "en" | "es" | "pt"; // Asegura que solo acepte estos valores
+}
+
+const { lang } = Astro.props; // 🔥 Recibe `lang` correctamente
+
+import { translations } from "../translations/i18n.ts";
+
+// 📌 Corrección: Asegura que `lang` es una de las claves de `translations`
+const t = translations[lang as keyof typeof translations];
+
+---
+
+<div>
+  <form
+    id="contact-form"
+    method="POST"
+    novalidate
+  >
+    <div class="pb-4">
+      <h2 class="text-4xl text-white font-semibold">{t.formTitle}</h2>
+      <p class="text-white mt-2">{t.formSubtitle}</p>
+    </div>
+
+    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="name" name="name" autocomplete="name" placeholder={t.name} required />
+    <div id="name-error" class="error-message"></div>
+
+    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="lastname" name="lastname" autocomplete="family-name" placeholder={t.lastname} required />
+    <div id="lastname-error" class="error-message"></div>
+
+    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="tel" id="phone" name="phone" autocomplete="phone" placeholder={t.phone} required />
+    <div id="phone-error" class="error-message"></div>
+
+    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="email" id="email" name="email" autocomplete="email" placeholder={t.email} required />
+    <div id="email-error" class="error-message"></div>
+
+    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="company" name="company" autocomplete="company" placeholder={t.company} required />
+    <div id="company-error" class="error-message"></div>
+
+    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="position" name="position" autocomplete="position" placeholder={t.position} required />
+    <div id="position-error" class="error-message"></div>
+
+    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="country" name="country" autocomplete="country" placeholder={t.country} required />
+    <div id="country-error" class="error-message"></div>
+
+    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="city" name="city" autocomplete="address-level2" placeholder={t.city} required />
+    <div id="city-error" class="error-message"></div>
+
+    <textarea class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" id="message" name="message" autocomplete="off" placeholder={t.message} required></textarea>
+    <div id="message-error" class="error-message"></div>
+
+    <div class="grid grid-cols-12 gap-4">
+      <div class="col-span-8">
+        <label for="recipients" class="text-white">Enviar a:</label>
+        <select class="cursor-pointer w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" id="recipients" name="recipients" autocomplete="off" required>
+          <option value="ldevesa@latcom.com">Ventas</option>
+          <option value="ldevesa@latcom.com, luis_devesa@hotmail.com">Soporte</option>
+          <option value="ldevesa@latcom.com, luis_devesa@hotmail.com, devesaluis@gmail.com">Información</option>
+        </select>
+      </div>
+      <div class="col-span-4 flex items-end">
+        <button class="cursor-pointer" type="submit">{t.submit}</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<style>
+  /* Estilos básicos */
+
+
+</style>
+
+<script type="module">
+  // Aquí puedes agregar JavaScript si necesitas validar el formulario
+  document
+    .getElementById("contact-form")
+    .addEventListener("submit", async function (event) {
+      event.preventDefault(); // Prevenir la recarga de la página
+
+
+      let formIsValid = true; // Variable para verificar si el formulario es válido
+
+      // Limpiar mensajes de error antes de validar
+      document.querySelectorAll(".error-message").forEach(function (msg) {
+        msg.textContent = "";
+      });
+
+      const formData = new FormData(this); // Obtener los datos del formulario
+
+      // Validación
+      const name = document.getElementById("name");
+      const lastname = document.getElementById("lastname");
+      const phone = document.getElementById("phone");
+      const email = document.getElementById("email");
+      const company = document.getElementById("company");
+      const country = document.getElementById("country");
+      const city = document.getElementById("city");
+      const message = document.getElementById("message");
+
+      // Validar nombre
+      if (name.value.trim() === "") {
+        document.getElementById("name-error").textContent =
+          "El nombre es obligatorio.";
+        formIsValid = false;
+      }
+
+      // Validar correo electrónico
+      if (email.value.trim() === "" || !validateEmail(email.value)) {
+        document.getElementById("email-error").textContent =
+          "Por favor, ingresa un correo válido.";
+        formIsValid = false;
+      }
+
+      // Validar mensaje
+      if (message.value.trim() === "") {
+        document.getElementById("message-error").textContent =
+          "El mensaje es obligatorio.";
+        formIsValid = false;
+      }
+
+      // Si el formulario es válido, enviarlo
+      if (formIsValid) {
+        try {
+          // 🛑 Asegurar que grecaptcha está listo antes de enviar el formulario
+          const token = await grecaptcha.execute("6LdfgvQqAAAAAI2W5GFz_PbD1Wz2qYpdQ8UAxDNb", { action: "submit" });
+          if (!token) {
+            alert("Error: No se pudo generar el token de reCAPTCHA.");
+            return;
+          }
+
+          console.log("Token generado:", token); // 🔍 Verificar en consola
+
+          // Crear FormData y agregar el token
+          const formData = new FormData(document.getElementById("contact-form"));
+          formData.append("recaptcha-token", token);
+
+          console.log("Enviando datos al servidor...");
+          
+          console.log("FormData antes de enviar:");
+          for (let pair of formData.entries()) {
+              console.log(pair[0] + ": " + pair[1]);
+          }
+
+          const response = await fetch("/landingform/server/send-email.php", {
+            method: "POST",
+            body: formData,
+          });
+
+          console.log("Respuesta sin procesar:", response); // 🔍 Ver si llega algo
+
+          const result = await response.json();
+          console.log("Respuesta del servidor:", result);
+
+          if (result.success) {
+            alert("¡Mensaje enviado correctamente!");
+            // Vaciar los campos del formulario
+            document.getElementById("contact-form").reset();
+          } else {
+            alert("Error: " + result.message);
+          }
+        } catch (error) {
+          alert("Hubo un error al procesar el formulario.");
+        }
+      }
+    });
+
+  // Función para validar el correo electrónico
+  function validateEmail(email) {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+  }
+</script>
