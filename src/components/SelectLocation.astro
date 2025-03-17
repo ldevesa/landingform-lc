@@ -20,7 +20,7 @@ const t = translations[lang as keyof typeof translations];
 <div id="translations" data-translations={JSON.stringify(t)}></div>
 
 <!-- Select de Países -->
-<select id="country" name="country" class="cursor-pointer w-full px-4 py-2 mb-1 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" onchange="updateCities(event)">
+<select id="country" name="country" class="cursor-pointer w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" onchange="updateCities(event)">
     <option value="">{t.country}</option>
     {countries.map((country: { country: string }) => (
       <option value={country.country}>{country.country}</option>
@@ -29,7 +29,7 @@ const t = translations[lang as keyof typeof translations];
   <div id="country-error" class="error-message"></div>
   
   <!-- Select de Ciudades -->
-  <select id="city" name="city" class="cursor-pointer w-full px-4 py-2 mb-1 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500">
+  <select id="city" name="city" class="cursor-pointer w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500">
     <option value="">{t.city}</option>
   </select>
   <div id="city-error" class="error-message"></div>
