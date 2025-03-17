@@ -52,8 +52,14 @@ try {
     // Lista blanca de destinatarios válidos
     $allowedRecipients = [
         "ldevesa@latcom.com",
-        "luis_devesa@hotmail.com",
-        "devesaluis@gmail.com"
+        "esobrino@latcom.com",
+        "kvazquez@latcom.com",
+        "vmuscatello@latcom.com",
+        "vpbueno@latcom.com",
+        "marketing@latcom.com",
+        "vbueno@latcom.com",
+        "rrhh@latcom.com",
+        "mbagatini@latcom.com"
     ];
 
     // Asegurar que el campo POST está presente
@@ -105,7 +111,7 @@ try {
 
     // Contenido del correo
     $mail->isHTML(true);
-    $mail->Subject = 'Nuevo mensaje de formulario de contacto';
+    $mail->Subject = 'Latcom - form contacto newsletters';
     $mail->Body = "Nombre: $name <br> Apellido: $lastname <br> Teléfono: $phone <br> Correo: $email <br> 
                    Empresa: $company <br> Cargo: $position <br> País: $country <br> Ciudad: $city <br> 
                    Mensaje: $message";

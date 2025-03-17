@@ -1,0 +1,94 @@
+---
+import { translations } from "../translations/i18n.ts";
+
+// Obtener la lista de países en el servidor para evitar problemas de CORS
+const response = await fetch("https://countriesnow.space/api/v0.1/countries");
+const data = await response.json();
+const countries = data.data;
+
+export interface Props {
+  lang: "en" | "es" | "pt"; // Asegura que solo acepte estos valores
+}
+
+const { lang } = Astro.props; // 🔥 Recibe `lang` correctamente
+
+// 📌 Corrección: Asegura que `lang` es una de las claves de `translations`
+const t = translations[lang as keyof typeof translations];
+---
+
+<!-- Pasar las traducciones al script usando un atributo data-* -->
+<div id="translations" data-translations={JSON.stringify(t)}></div>
+
+<!-- Select de Países -->
+<select id="country" name="country" class="cursor-pointer w-full px-4 py-2 mb-1 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" onchange="updateCities(event)">
+    <option value="">{t.country}</option>
+    {countries.map((country: { country: string }) => (
+      <option value={country.country}>{country.country}</option>
+    ))}
+  </select>
+  
+  <!-- Select de Ciudades -->
+  <select id="city" name="city" class="cursor-pointer w-full px-4 py-2 mb-1 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500">
+    <option value="">{t.city}</option>
+  </select>
+
+
+<script>
+// Obtener las traducciones del atributo data-translations
+const translationsElement = document.getElementById("translations");
+  const t = translationsElement ? JSON.parse(translationsElement.dataset.translations || "{}") : {};
+    
+declare global {
+  interface Window {
+    updateCities: (event: Event) => Promise<void>;
+  }
+}
+
+// Definir la función updateCities en el ámbito global
+window.updateCities = async function (event: Event) {
+    const countrySelect = event.target as HTMLSelectElement;
+    const citySelect = document.getElementById("city") as HTMLSelectElement;
+    
+    if (!countrySelect) {
+      console.error("countrySelect is null");
+      return;
+    }
+    const selectedCountry = countrySelect.value;
+    citySelect.innerHTML = "<option value=''>Cargando...</option>";
+
+    if (!selectedCountry) {
+      citySelect.innerHTML = "<option value=''>Seleccione un país primero</option>";
+      return;
+    }
+
+    try {
+      const response = await fetch("https://countriesnow.space/api/v0.1/countries/cities", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ country: selectedCountry }),
+      });
+
+      const data = await response.json();
+      const cities: string[] = data.data;
+
+      citySelect.innerHTML = cities.length
+        ? `<option value=''>${t.city}</option>` + 
+         cities.map((city: string) => `<option value="${city}">${city}</option>`).join("")
+        : "<option value=''>No hay ciudades disponibles</option>";
+
+        // Asegurarse de que el placeholder esté seleccionado
+      citySelect.selectedIndex = 0;
+    } catch (error) {
+      console.error("Error al obtener ciudades:", error);
+      citySelect.innerHTML = "<option value=''>Error al cargar ciudades</option>";
+    }
+  };
+
+  // Vincular el evento change al select de países después de que el DOM esté listo
+  document.addEventListener("DOMContentLoaded", () => {
+    const countrySelect = document.getElementById("country");
+    if (countrySelect) {
+      countrySelect.addEventListener("change", window.updateCities);
+    }
+  });
+</script>

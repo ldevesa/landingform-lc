@@ -1,14 +1,15 @@
 ---
+import SelectLocation from "./SelectLocation.astro";
+import { translations } from "../translations/i18n.ts";
 export interface Props {
   lang: "en" | "es" | "pt"; // Asegura que solo acepte estos valores
 }
 
 const { lang } = Astro.props; // 🔥 Recibe `lang` correctamente
 
-import { translations } from "../translations/i18n.ts";
-
 // 📌 Corrección: Asegura que `lang` es una de las claves de `translations`
 const t = translations[lang as keyof typeof translations];
+
 
 ---
 
@@ -41,11 +42,13 @@ const t = translations[lang as keyof typeof translations];
     <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="position" name="position" autocomplete="position" placeholder={t.position} required />
     <div id="position-error" class="error-message"></div>
 
-    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="country" name="country" autocomplete="country" placeholder={t.country} required />
+    <!-- <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="country" name="country" autocomplete="country" placeholder={t.country} required />
     <div id="country-error" class="error-message"></div>
 
     <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="city" name="city" autocomplete="address-level2" placeholder={t.city} required />
-    <div id="city-error" class="error-message"></div>
+        <div id="city-error" class="error-message"></div> -->
+
+    <SelectLocation lang={lang} />
 
     <textarea class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" id="message" name="message" autocomplete="off" placeholder={t.message} required></textarea>
     <div id="message-error" class="error-message"></div>
@@ -54,9 +57,10 @@ const t = translations[lang as keyof typeof translations];
       <div class="col-span-8">
         <label for="recipients" class="text-white">Enviar a:</label>
         <select class="cursor-pointer w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" id="recipients" name="recipients" autocomplete="off" required>
-          <option value="ldevesa@latcom.com">Ventas</option>
-          <option value="ldevesa@latcom.com, luis_devesa@hotmail.com">Soporte</option>
-          <option value="ldevesa@latcom.com, luis_devesa@hotmail.com, devesaluis@gmail.com">Información</option>
+          <option value="ldevesa@latcom.com, esobrino@latcom.com,kvazquez@latcom.com,vmuscatello@latcom.com,vpbueno@latcom.com">Soy proveedor</option>
+          <option value="ldevesa@latcom.com, kvazquez@latcom.com,marketing@latcom.com,vbueno@latcom.com,vpbueno@latcom.com">Soy anunciante</option>
+          <option value="ldevesa@latcom.com, rrhh@latcom.com,mbagatini@latcom.com,vpbueno@latcom.com">Quiero postularme</option>
+          <option value="ldevesa@latcom.com, marketing@latcom.com,vpbueno@latcom.com">Otras consultas</option>
         </select>
       </div>
       <div class="col-span-4 flex items-end">
@@ -72,6 +76,7 @@ const t = translations[lang as keyof typeof translations];
 
 
 </style>
+
 
 <script type="module">
   // Aquí puedes agregar JavaScript si necesitas validar el formulario
@@ -96,6 +101,7 @@ const t = translations[lang as keyof typeof translations];
       const phone = document.getElementById("phone");
       const email = document.getElementById("email");
       const company = document.getElementById("company");
+      const position = document.getElementById("position");
       const country = document.getElementById("country");
       const city = document.getElementById("city");
       const message = document.getElementById("message");
@@ -103,7 +109,21 @@ const t = translations[lang as keyof typeof translations];
       // Validar nombre
       if (name.value.trim() === "") {
         document.getElementById("name-error").textContent =
-          "El nombre es obligatorio.";
+          "Por favor, ingresa tu nombre.";
+        formIsValid = false;
+      }
+
+      // Validar apellido
+      if (lastname.value.trim() === "") {
+        document.getElementById("lastname-error").textContent =
+          "Por favor, ingresa tu apellido.";
+        formIsValid = false;
+      }
+
+      // Validar telefoneo
+      if (phone.value.trim() === "" || !validateEmail(email.value)) {
+        document.getElementById("phone-error").textContent =
+          "Por favor, ingresa un telefono válido.";
         formIsValid = false;
       }
 
@@ -111,6 +131,27 @@ const t = translations[lang as keyof typeof translations];
       if (email.value.trim() === "" || !validateEmail(email.value)) {
         document.getElementById("email-error").textContent =
           "Por favor, ingresa un correo válido.";
+        formIsValid = false;
+      }
+
+      // Validar empresa
+      if (company.value.trim() === "") {
+        document.getElementById("company-error").textContent =
+          "Por favor, ingresa tu empresa.";
+        formIsValid = false;
+      }
+
+      // Validar cargo
+      if (position.value.trim() === "") {
+        document.getElementById("position-error").textContent =
+          "Por favor, ingresa tu cargo.";
+        formIsValid = false;
+      }
+
+      // Validar país
+      if (country.value.trim() === "") {
+        document.getElementById("country-error").textContent =
+          "Por favor, ingresa tu país.";
         formIsValid = false;
       }
 
@@ -146,6 +187,9 @@ const t = translations[lang as keyof typeof translations];
 
           const response = await fetch("/landingform/server/send-email.php", {
             method: "POST",
+            /* headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            }, */
             body: formData,
           });
 
