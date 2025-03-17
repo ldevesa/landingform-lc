@@ -9,37 +9,82 @@ const { lang } = Astro.props; // 🔥 Recibe `lang` correctamente
 
 // 📌 Corrección: Asegura que `lang` es una de las claves de `translations`
 const t = translations[lang as keyof typeof translations];
-
-
 ---
 
+<!-- Pasar las traducciones al script usando un atributo data-* -->
+<div id="translations" data-translations={JSON.stringify(t)}></div>
+
 <div>
-  <form
-    id="contact-form"
-    method="POST"
-    novalidate
-  >
+  <form id="contact-form" method="POST" novalidate>
     <div class="pb-4">
       <h2 class="text-4xl text-white font-semibold">{t.formTitle}</h2>
       <p class="text-white mt-2">{t.formSubtitle}</p>
     </div>
 
-    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="name" name="name" autocomplete="name" placeholder={t.name} required />
+    <input
+      class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
+      type="text"
+      id="name"
+      name="name"
+      autocomplete="name"
+      placeholder={t.name}
+      required
+    />
     <div id="name-error" class="error-message"></div>
 
-    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="lastname" name="lastname" autocomplete="family-name" placeholder={t.lastname} required />
+    <input
+      class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
+      type="text"
+      id="lastname"
+      name="lastname"
+      autocomplete="family-name"
+      placeholder={t.lastname}
+      required
+    />
     <div id="lastname-error" class="error-message"></div>
 
-    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="tel" id="phone" name="phone" autocomplete="phone" placeholder={t.phone} required />
+    <input
+      class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
+      type="tel"
+      id="phone"
+      name="phone"
+      autocomplete="phone"
+      placeholder={t.phone}
+      required
+    />
     <div id="phone-error" class="error-message"></div>
 
-    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="email" id="email" name="email" autocomplete="email" placeholder={t.email} required />
+    <input
+      class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
+      type="email"
+      id="email"
+      name="email"
+      autocomplete="email"
+      placeholder={t.email}
+      required
+    />
     <div id="email-error" class="error-message"></div>
 
-    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="company" name="company" autocomplete="company" placeholder={t.company} required />
+    <input
+      class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
+      type="text"
+      id="company"
+      name="company"
+      autocomplete="company"
+      placeholder={t.company}
+      required
+    />
     <div id="company-error" class="error-message"></div>
 
-    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="position" name="position" autocomplete="position" placeholder={t.position} required />
+    <input
+      class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
+      type="text"
+      id="position"
+      name="position"
+      autocomplete="position"
+      placeholder={t.position}
+      required
+    />
     <div id="position-error" class="error-message"></div>
 
     <!-- <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="country" name="country" autocomplete="country" placeholder={t.country} required />
@@ -50,41 +95,66 @@ const t = translations[lang as keyof typeof translations];
 
     <SelectLocation lang={lang} />
 
-    <textarea class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" id="message" name="message" autocomplete="off" placeholder={t.message} required></textarea>
+    <textarea
+      class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
+      id="message"
+      name="message"
+      autocomplete="off"
+      placeholder={t.message}
+      required></textarea>
     <div id="message-error" class="error-message"></div>
 
     <div class="grid grid-cols-12 gap-4">
       <div class="col-span-8">
         <label for="recipients" class="text-white">Enviar a:</label>
-        <select class="cursor-pointer w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" id="recipients" name="recipients" autocomplete="off" required>
-          <option value="ldevesa@latcom.com, esobrino@latcom.com,kvazquez@latcom.com,vmuscatello@latcom.com,vpbueno@latcom.com">Soy proveedor</option>
-          <option value="ldevesa@latcom.com, kvazquez@latcom.com,marketing@latcom.com,vbueno@latcom.com,vpbueno@latcom.com">Soy anunciante</option>
-          <option value="ldevesa@latcom.com, rrhh@latcom.com,mbagatini@latcom.com,vpbueno@latcom.com">Quiero postularme</option>
-          <option value="ldevesa@latcom.com, marketing@latcom.com,vpbueno@latcom.com">Otras consultas</option>
+        <select
+          class="cursor-pointer w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
+          id="recipients"
+          name="recipients"
+          autocomplete="off"
+          required
+        >
+          <option
+            value="ldevesa@latcom.com, esobrino@latcom.com,kvazquez@latcom.com,vmuscatello@latcom.com,vpbueno@latcom.com"
+            >Soy proveedor</option
+          >
+          <option
+            value="ldevesa@latcom.com, kvazquez@latcom.com,marketing@latcom.com,vbueno@latcom.com,vpbueno@latcom.com"
+            >Soy anunciante</option
+          >
+          <option
+            value="ldevesa@latcom.com, rrhh@latcom.com,mbagatini@latcom.com,vpbueno@latcom.com"
+            >Quiero postularme</option
+          >
+          <option
+            value="ldevesa@latcom.com, marketing@latcom.com,vpbueno@latcom.com"
+            >Otras consultas</option
+          >
         </select>
       </div>
       <div class="col-span-4 flex items-end">
         <button class="cursor-pointer" type="submit">{t.submit}</button>
       </div>
     </div>
-
   </form>
 </div>
 
 <style>
   /* Estilos básicos */
-
-
 </style>
 
-
 <script type="module">
+  // Obtener las traducciones del atributo data-translations
+  const translationsElement = document.getElementById("translations");
+  const t = translationsElement
+    ? JSON.parse(translationsElement.dataset.translations || "{}")
+    : {};
+
   // Aquí puedes agregar JavaScript si necesitas validar el formulario
   document
     .getElementById("contact-form")
     .addEventListener("submit", async function (event) {
       event.preventDefault(); // Prevenir la recarga de la página
-
 
       let formIsValid = true; // Variable para verificar si el formulario es válido
 
@@ -109,56 +179,63 @@ const t = translations[lang as keyof typeof translations];
       // Validar nombre
       if (name.value.trim() === "") {
         document.getElementById("name-error").textContent =
-          "Por favor, ingresa tu nombre.";
+          t.errorName || "Por favor, ingresa tu nombre.";
         formIsValid = false;
       }
 
       // Validar apellido
       if (lastname.value.trim() === "") {
         document.getElementById("lastname-error").textContent =
-          "Por favor, ingresa tu apellido.";
+          t.errorLastname || "Por favor, ingresa tu apellido.";
         formIsValid = false;
       }
 
       // Validar telefoneo
-      if (phone.value.trim() === "" || !validateEmail(email.value)) {
+      if (phone.value.trim() === "") {
         document.getElementById("phone-error").textContent =
-          "Por favor, ingresa un telefono válido.";
+          t.errorPhone || "Por favor, ingresa un telefono válido.";
         formIsValid = false;
       }
 
       // Validar correo electrónico
       if (email.value.trim() === "" || !validateEmail(email.value)) {
         document.getElementById("email-error").textContent =
-          "Por favor, ingresa un correo válido.";
+          t.errorEmail || "Por favor, ingresa un correo válido.";
         formIsValid = false;
       }
 
       // Validar empresa
       if (company.value.trim() === "") {
         document.getElementById("company-error").textContent =
-          "Por favor, ingresa tu empresa.";
+          t.errorCompany || "Por favor, ingresa tu empresa.";
         formIsValid = false;
       }
 
       // Validar cargo
       if (position.value.trim() === "") {
         document.getElementById("position-error").textContent =
-          "Por favor, ingresa tu cargo.";
+          t.errorPosition || "Por favor, ingresa tu cargo.";
         formIsValid = false;
       }
 
       // Validar país
       if (country.value.trim() === "") {
         document.getElementById("country-error").textContent =
-          "Por favor, ingresa tu país.";
+          t.errorCountry ||  "Por favor, ingresa tu país.";
+        formIsValid = false;
+      }
+
+      // Validar ciudad
+      if (country.value.trim() === "") {
+        document.getElementById("city-error").textContent =
+          t.errorCity || "Por favor, ingresa tu país.";
         formIsValid = false;
       }
 
       // Validar mensaje
       if (message.value.trim() === "") {
         document.getElementById("message-error").textContent =
-          "El mensaje es obligatorio.";
+          t.errorMessage || "El mensaje es obligatorio.";
         formIsValid = false;
       }
 
@@ -166,7 +243,10 @@ const t = translations[lang as keyof typeof translations];
       if (formIsValid) {
         try {
           // 🛑 Asegurar que grecaptcha está listo antes de enviar el formulario
-          const token = await grecaptcha.execute("6LdfgvQqAAAAAI2W5GFz_PbD1Wz2qYpdQ8UAxDNb", { action: "submit" });
+          const token = await grecaptcha.execute(
+            "6LdfgvQqAAAAAI2W5GFz_PbD1Wz2qYpdQ8UAxDNb",
+            { action: "submit" }
+          );
           if (!token) {
             alert("Error: No se pudo generar el token de reCAPTCHA.");
             return;
@@ -175,14 +255,16 @@ const t = translations[lang as keyof typeof translations];
           console.log("Token generado:", token); // 🔍 Verificar en consola
 
           // Crear FormData y agregar el token
-          const formData = new FormData(document.getElementById("contact-form"));
+          const formData = new FormData(
+            document.getElementById("contact-form")
+          );
           formData.append("recaptcha-token", token);
 
           console.log("Enviando datos al servidor...");
-          
+
           console.log("FormData antes de enviar:");
           for (let pair of formData.entries()) {
-              console.log(pair[0] + ": " + pair[1]);
+            console.log(pair[0] + ": " + pair[1]);
           }
 
           const response = await fetch("/landingform/server/send-email.php", {

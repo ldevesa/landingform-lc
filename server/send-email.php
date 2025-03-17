@@ -111,7 +111,7 @@ try {
 
     // Contenido del correo
     $mail->isHTML(true);
-    $mail->Subject = 'Latcom - form contacto newsletters';
+    $mail->Subject = 'Latcom - formulario de contacto de newsletters';
     $mail->Body = "Nombre: $name <br> Apellido: $lastname <br> Teléfono: $phone <br> Correo: $email <br> 
                    Empresa: $company <br> Cargo: $position <br> País: $country <br> Ciudad: $city <br> 
                    Mensaje: $message";
