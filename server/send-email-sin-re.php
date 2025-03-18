@@ -1,7 +1,6 @@
 <?php
 file_put_contents(__DIR__ . "/debug.log", "POST DATA: " . print_r($_POST, true) . "\n", FILE_APPEND);
 
-
 // Habilitar reporte de errores
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -18,31 +17,7 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
-// ✅ Validar reCAPTCHA antes de procesar los datos
-$secretKey = $_ENV['SECRET_RECAPTCHA_SITE_KEY'];
-$recaptchaToken = $_POST['recaptcha-token'] ?? '';
-
-if (!$recaptchaToken) {
-    echo json_encode(['success' => false, 'message' => 'Falta el token de reCAPTCHA.']);
-    exit;
-}
-
-file_put_contents(__DIR__ . "/debug.log", "reCAPTCHA Token: " . $recaptchaToken . "\n", FILE_APPEND);
-
-$recaptchaUrl = 'https://www.google.com/recaptcha/api/siteverify';
-$recaptchaResponse = file_get_contents($recaptchaUrl . '?secret=' . $secretKey . '&response=' . $recaptchaToken);
-$recaptchaData = json_decode($recaptchaResponse, true);
-
-file_put_contents(__DIR__ . "/debug.log", "reCAPTCHA Response: " . $recaptchaResponse . "\n", FILE_APPEND);
-file_put_contents(__DIR__ . "/debug.log", "reCAPTCHA Data: " . print_r($recaptchaData, true) . "\n", FILE_APPEND);
-
-if (!$recaptchaData['success'] || $recaptchaData['score'] < 0.5) {
-    echo json_encode(['success' => false, 'message' => 'No se pudo verificar el reCAPTCHA.']);
-    exit;
-}
-
 try {
-
     // Validar dirección del remitente
     $fromEmail = $_ENV['SMTP_USER'];
     if (!filter_var($fromEmail, FILTER_VALIDATE_EMAIL)) {
@@ -121,7 +96,7 @@ try {
     if ($mail->send()) {
         $response = ['success' => true, 'message' => 'El mensaje ha sido enviado con éxito.'];
     } else {
-        throw new Exception('Hubo un error al enviar el mensaje.' . $mail->ErrorInfo);
+        throw new Exception('Hubo un error al enviar el mensaje: ' . $mail->ErrorInfo);
     }
 } catch (Exception $e) {
     $response = ['success' => false, 'message' => 'Error: ' . $e->getMessage()];

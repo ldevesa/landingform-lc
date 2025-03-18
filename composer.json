@@ -1,0 +1,10 @@
+{
+  "name": "ldevesa/landingform",
+  "description": "Un proyecto que usa PHPMailer y dotenv",
+  "require": {
+    "php": ">=7.4.3",
+    "phpmailer/phpmailer": "^6.5",
+    "vlucas/phpdotenv": "^5.5"
+  }
+}
+  

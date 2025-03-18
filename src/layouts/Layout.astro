@@ -13,6 +13,9 @@ const {
   description, 
   lang,
 } = Astro.props;
+
+// Obtener la clave pública de reCAPTCHA desde las variables de entorno
+const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 ---
 
 <!doctype html>
@@ -27,7 +30,7 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <script src="https://www.google.com/recaptcha/api.js?render=6LdfgvQqAAAAAI2W5GFz_PbD1Wz2qYpdQ8UAxDNb" async defer></script>
+    <script src={`https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`} async defer></script>
   </head>
   <body class="antialiased text-secondary-900">
     <div id="page-wrapper" class="page-transition-wrapper">

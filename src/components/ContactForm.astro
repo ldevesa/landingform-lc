@@ -9,7 +9,12 @@ const { lang } = Astro.props; // 🔥 Recibe `lang` correctamente
 
 // 📌 Corrección: Asegura que `lang` es una de las claves de `translations`
 const t = translations[lang as keyof typeof translations];
+
+const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 ---
+
+<div id="recaptcha-container" data-sitekey={recaptchaSiteKey}></div>
+
 
 <!-- Pasar las traducciones al script usando un atributo data-* -->
 <div id="translations" data-translations={JSON.stringify(t)}></div>
@@ -88,12 +93,12 @@ const t = translations[lang as keyof typeof translations];
     <div id="position-error" class="error-message"></div>
 
     <!-- <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="country" name="country" autocomplete="country" placeholder={t.country} required />
-    <div id="country-error" class="error-message"></div>
-
-    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="city" name="city" autocomplete="address-level2" placeholder={t.city} required />
-        <div id="city-error" class="error-message"></div> -->
+    <div id="country-error" class="error-message"></div> -->
 
     <SelectLocation lang={lang} />
+
+    <input class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500" type="text" id="city" name="city" autocomplete="address-level2" placeholder={t.city} required />
+        <div id="city-error" class="error-message"></div>
 
     <textarea
       class="w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
@@ -106,15 +111,17 @@ const t = translations[lang as keyof typeof translations];
 
     <div class="grid grid-cols-12 gap-4">
       <div class="col-span-8">
-        <label for="recipients" class="text-white">Enviar a:</label>
+        <label for="recipients" class="text-white hidden">Enviar a:</label>
+        <button class="cursor-pointer" type="submit">{t.submit}</button>
         <select
-          class="cursor-pointer w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500"
+          class="cursor-pointer w-full px-4 py-2 rounded-lg border-2 border-white focus:ring-2 focus:ring-blue-500 focus:outline-blue-500 hidden"
           id="recipients"
           name="recipients"
           autocomplete="off"
           required
         >
-          <option
+          <option value="ldevesa@latcom.com">comercial</option>
+          <!-- <option
             value="ldevesa@latcom.com, esobrino@latcom.com,kvazquez@latcom.com,vmuscatello@latcom.com,vpbueno@latcom.com"
             >Soy proveedor</option
           >
@@ -129,11 +136,11 @@ const t = translations[lang as keyof typeof translations];
           <option
             value="ldevesa@latcom.com, marketing@latcom.com,vpbueno@latcom.com"
             >Otras consultas</option
-          >
+          > -->
         </select>
       </div>
       <div class="col-span-4 flex items-end">
-        <button class="cursor-pointer" type="submit">{t.submit}</button>
+        <button class="cursor-pointer hidden" type="submit">{t.submit}</button>
       </div>
     </div>
   </form>
@@ -144,6 +151,10 @@ const t = translations[lang as keyof typeof translations];
 </style>
 
 <script type="module">
+  // Obtener la clave de reCAPTCHA del atributo data-sitekey
+  const recaptchaContainer = document.getElementById("recaptcha-container");
+  const recaptchaSiteKey = recaptchaContainer?.dataset.sitekey || 'default-key';
+  console.log("Clave de reCAPTCHA:", recaptchaSiteKey);
   // Obtener las traducciones del atributo data-translations
   const translationsElement = document.getElementById("translations");
   const t = translationsElement
@@ -155,6 +166,11 @@ const t = translations[lang as keyof typeof translations];
     .getElementById("contact-form")
     .addEventListener("submit", async function (event) {
       event.preventDefault(); // Prevenir la recarga de la página
+
+      // Deshabilitar el botón de enviar
+      const submitButton = document.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = t.submitting || "Enviando...";
 
       let formIsValid = true; // Variable para verificar si el formulario es válido
 
@@ -226,7 +242,7 @@ const t = translations[lang as keyof typeof translations];
       }
 
       // Validar ciudad
-      if (country.value.trim() === "") {
+      if (city.value.trim() === "") {
         document.getElementById("city-error").textContent =
           t.errorCity || "Por favor, ingresa tu país.";
         formIsValid = false;
@@ -244,7 +260,7 @@ const t = translations[lang as keyof typeof translations];
         try {
           // 🛑 Asegurar que grecaptcha está listo antes de enviar el formulario
           const token = await grecaptcha.execute(
-            "6LdfgvQqAAAAAI2W5GFz_PbD1Wz2qYpdQ8UAxDNb",
+              recaptchaSiteKey,
             { action: "submit" }
           );
           if (!token) {
@@ -289,7 +305,15 @@ const t = translations[lang as keyof typeof translations];
           }
         } catch (error) {
           alert("Hubo un error al procesar el formulario.");
+        } finally {
+          // Volver a habilitar el botón de enviar
+          submitButton.disabled = false;
+          submitButton.textContent = t.submit || "Enviar";
         }
+      } else {
+        // Si el formulario no es válido, volver a habilitar el botón
+        submitButton.disabled = false;
+        submitButton.textContent = t.submit || "Enviar";
       }
     });
 
