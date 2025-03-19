@@ -19,7 +19,8 @@ Inside of your Astro project, you'll see the following folders and files:
 ```text
 /
 ├── public/
-│   └── favicon.svg
+│   └── favicon.png
+│   └── robots.txt
 ├── src/
 │   ├── components/
 │   │   └── ContactForm.astro
@@ -67,7 +68,14 @@ All commands are run from the root of the project, from a terminal:
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
 
 
-Se usa para las dos empresas. 
+1. Se instala con composer.json usando el comando composer install. Esto crea la carpeta vendor con phpmailer y dotenv.
+2. Se instala el repo de astro con npm install
+3. Se configura segun empresa
+
+Se usa para las dos empresas, LC y WC. 
+Tiene archivo robots.txt y heades para no ser indexado.
+Tiene 2 footers, uno por empresa con sus respectivas redes.
+
 build:
-    .send-email.php hay que cambiar el nombre de la empresa para la que se use y se sube
-    .archivo env se configura con las key correspondiente para cada sitio y se sube
+    .send-email.php hay que cambiar el nombre de la empresa para la que se use y se sube.
+    .archivo env se configura con las key correspondiente para cada sitio y se sube.

@@ -104,7 +104,7 @@ try {
     $mail->Port = $_ENV['SMTP_PORT'];
 
     // Remitente
-    $mail->setFrom($_ENV['SMTP_USER'], 'Latcom');
+    $mail->setFrom($_ENV['SMTP_USER'], 'Worldcom');
 
     // Agregar múltiples destinatarios
     foreach ($validRecipients as $recipient) {
@@ -113,7 +113,7 @@ try {
 
     // Contenido del correo
     $mail->isHTML(true);
-    $mail->Subject = 'Latcom - formulario de contacto de newsletters';
+    $mail->Subject = 'Worldcom - formulario de contacto de newsletters';
     $mail->Body = "Nombre: $name <br> Apellido: $lastname <br> Teléfono: $phone <br> Correo: $email <br> 
                    Empresa: $company <br> Cargo: $position <br> País: $country <br> Ciudad: $city <br> 
                    Mensaje: $message";
