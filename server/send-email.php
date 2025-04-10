@@ -1,5 +1,6 @@
 <?php
 file_put_contents(__DIR__ . "/debug.log", "POST DATA: " . print_r($_POST, true) . "\n", FILE_APPEND);
+file_put_contents(__DIR__ . "/lang-debug.log", "LANG POST: " . ($_POST['lang'] ?? 'no recibido') . "\n", FILE_APPEND);
 
 
 // Habilitar reporte de errores
@@ -23,7 +24,7 @@ $secretKey = $_ENV['SECRET_RECAPTCHA_SITE_KEY'];
 $recaptchaToken = $_POST['recaptcha-token'] ?? '';
 
 if (!$recaptchaToken) {
-    echo json_encode(['success' => false, 'message' => 'Falta el token de reCAPTCHA.']);
+    echo json_encode(['success' => false, 'message' => $messages[$lang]['missing_recaptcha'] ?? 'Falta el token de reCAPTCHA.']);
     exit;
 }
 
@@ -37,7 +38,7 @@ file_put_contents(__DIR__ . "/debug.log", "reCAPTCHA Response: " . $recaptchaRes
 file_put_contents(__DIR__ . "/debug.log", "reCAPTCHA Data: " . print_r($recaptchaData, true) . "\n", FILE_APPEND);
 
 if (!$recaptchaData['success'] || $recaptchaData['score'] < 0.5) {
-    echo json_encode(['success' => false, 'message' => 'No se pudo verificar el reCAPTCHA.']);
+    echo json_encode(['success' => false, 'message' => $messages[$lang]['invalid_recaptcha'] ?? 'No se pudo verificar el reCAPTCHA.']);
     exit;
 }
 
@@ -46,7 +47,7 @@ try {
     // Validar dirección del remitente
     $fromEmail = $_ENV['SMTP_USER'];
     if (!filter_var($fromEmail, FILTER_VALIDATE_EMAIL)) {
-        throw new Exception('La dirección de correo del remitente no es válida: ' . $fromEmail);
+        throw new Exception($msg['from_email_invalid'] . $fromEmail);
     }
 
     // Lista blanca de destinatarios válidos
@@ -66,7 +67,7 @@ try {
 
     // Asegurar que el campo POST está presente
     if (!isset($_POST['recipients']) || empty(trim($_POST['recipients']))) {
-        throw new Exception('No se seleccionó ningún destinatario.');
+        throw new Exception($msg['no_recipients']);
     }
 
     // Separar los correos ingresados
@@ -79,7 +80,7 @@ try {
 
     // Si no hay destinatarios válidos, detener
     if (empty($validRecipients)) {
-        throw new Exception('Ninguna dirección válida seleccionada.');
+        throw new Exception($msg['invalid_recipients']);
     }
 
     // Obtener y sanitizar datos del formulario
@@ -92,6 +93,41 @@ try {
     $country = htmlspecialchars($_POST['country'] ?? '');
     $city = htmlspecialchars($_POST['city'] ?? '');
     $message = htmlspecialchars($_POST['message'] ?? '');
+
+    $lang = $_POST['lang'] ?? 'es'; // español por defecto
+
+    $messages = [
+        'es' => [
+            'from_email_invalid' => 'La dirección de correo del remitente no es válida: ',
+            'missing_recaptcha' => 'Falta el token de reCAPTCHA.',
+            'invalid_recaptcha' => 'No se pudo verificar el reCAPTCHA.',
+            'no_recipients' => 'No se seleccionó ningún destinatario.',
+            'invalid_recipients' => 'Ninguna dirección válida seleccionada.',
+            'success' => 'El mensaje ha sido enviado con éxito.',
+            'send_error' => 'Hubo un error al enviar el mensaje.',
+        ],
+        'en' => [
+            'from_email_invalid' => 'The sender email address is not valid: ',
+            'missing_recaptcha' => 'Missing reCAPTCHA token.',
+            'invalid_recaptcha' => 'reCAPTCHA verification failed.',
+            'no_recipients' => 'No recipient selected.',
+            'invalid_recipients' => 'No valid recipient address selected.',
+            'success' => 'Message sent successfully.',
+            'send_error' => 'There was an error sending the message.',
+        ],
+        'pt' => [
+            'from_email_invalid' => 'O endereço de e-mail do remetente não é válido: ',
+            'missing_recaptcha' => 'Falta o token do reCAPTCHA.',
+            'invalid_recaptcha' => 'Não foi possível verificar o reCAPTCHA.',
+            'no_recipients' => 'Nenhum destinatário selecionado.',
+            'invalid_recipients' => 'Nenhum endereço de destinatário válido selecionado.',
+            'success' => 'A mensagem foi enviada com sucesso.',
+            'send_error' => 'Houve um erro ao enviar a mensagem.',
+        ]
+    ];
+
+    $msg = $messages[$lang] ?? $messages['es']; // fallback al español
+
 
     // Crear instancia de PHPMailer
     $mail = new PHPMailer(true);
@@ -113,19 +149,42 @@ try {
 
     // Contenido del correo
     $mail->isHTML(true);
-    $mail->Subject = 'Worldcom - formulario de contacto de newsletters';
-    $mail->Body = "Nombre: $name <br> Apellido: $lastname <br> Teléfono: $phone <br> Correo: $email <br> 
-                   Empresa: $company <br> Cargo: $position <br> País: $country <br> Ciudad: $city <br> 
-                   Mensaje: $message";
+    $mail->Subject = 'Worldcom - Contacto desde newsletters';
+    $titles = [
+        'es' => 'Título campaña',
+        'en' => 'Campaign title',
+        'pt' => 'Título campanha'
+    ];
+    
+    $title = $titles[$lang] ?? $titles['es'];
+    $mail->Body = '
+        <div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 30px;">
+            <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                <div style="text-align: center; margin-bottom: 20px; padding: 20px; background-color: #002646;">
+                    <img src="https://worldcomooh.com/landingform/assets/worldcom.png" alt="Worldcom" style="max-width: 200px;">
+                </div>
+                <h2 style="color: #333; text-align: center;">' . $title . '</h2>
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+                <p><strong>Nombre:</strong> ' . $name . '</p>
+                <p><strong>Apellido:</strong> ' . $lastname . '</p>
+                <p><strong>Teléfono:</strong> ' . $phone . '</p>
+                <p><strong>Correo:</strong> ' . $email . '</p>
+                <p><strong>Empresa:</strong> ' . $company . '</p>
+                <p><strong>Cargo:</strong> ' . $position . '</p>
+                <p><strong>País:</strong> ' . $country . '</p>
+                <p><strong>Ciudad:</strong> ' . $city . '</p>
+                <p><strong>Mensaje:</strong> ' . $message . '</p>
+            </div>
+        </div>';
 
     // Enviar el correo
     if ($mail->send()) {
-        $response = ['success' => true, 'message' => 'El mensaje ha sido enviado con éxito.'];
+        $response = ['success' => true, 'message' => $msg['success']];
     } else {
         throw new Exception('Hubo un error al enviar el mensaje.' . $mail->ErrorInfo);
     }
 } catch (Exception $e) {
-    $response = ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+    $response = ['success' => false, 'message' => $msg['send_error'] . ' ' . $e->getMessage()];
 }
 
 // Guardar logs

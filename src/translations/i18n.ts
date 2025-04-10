@@ -14,6 +14,7 @@ export const translations = {
     city: "City",
     message: "Message",
     submit: "Send",
+    submitting: "Submitting...",
     errorName: "The name is required.",
     errorLastname: "The last name is required.",
     errorPhone: "The phone is required.",
@@ -22,7 +23,10 @@ export const translations = {
     errorPosition: "The position is required.",
     errorCountry: "The country is required.",
     errorCity: "The city is required.",
-    errorMessage: "Message is required."
+    errorMessage: "Message is required.",
+    success: "Message sent successfully!",
+    catchError: "There was an error processing the form.",
+    recaptchaError: "Error: Could not generate reCAPTCHA token."
   },
   es: {
     title: "Latcom",
@@ -39,6 +43,7 @@ export const translations = {
     city: "Ciudad",
     message: "Mensaje",
     submit: "Enviar",
+    submitting: "Enviando...",
     errorName: "El nombre es obligatorio.",
     errorLastname: "El apellido es obligatorio.",
     errorPhone: "El telefono es obligatorio.",
@@ -47,7 +52,10 @@ export const translations = {
     errorPosition: "El cargo es obligatorio.",
     errorCountry: "El país es obligatorio.",
     errorCity: "La ciudad es obligatoria.",
-    errorMessage: "El mensaje es obligatorio."
+    errorMessage: "El mensaje es obligatorio.",
+    success: "¡Mensaje enviado correctamente!",
+    catchError: "Hubo un error al procesar el formulario.",
+    recaptchaError: "Error: No se pudo generar el token de reCAPTCHA."
   },
   pt: {
     title: "Latcom",
@@ -64,6 +72,7 @@ export const translations = {
     city: "Cidade",
     message: "Mensagem",
     submit: "Enviar",
+    submitting: "Enviando...",
     errorName: "O nome é obrigatório.",
     errorLastname: "O sobrenome é obrigatório.",
     errorPhone: "O telefone é obrigatório.",
@@ -72,6 +81,9 @@ export const translations = {
     errorPosition: "O cargo é obrigatório.",
     errorCountry: "O país é obrigatório.",
     errorCity: "A cidade é obrigatória.",
-    errorMessage: "El mensaje es obligatorio."
+    errorMessage: "El mensaje es obligatorio.",
+    success: "Mensagem enviada com sucesso!",
+    catchError: "Ocorreu um erro ao processar o formulário.",
+    recaptchaError: "Erro: Não foi possível gerar o token do reCAPTCHA."
   }
 } as const;
