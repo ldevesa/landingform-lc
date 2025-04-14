@@ -18,6 +18,8 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 <!-- Pasar las traducciones al script usando un atributo data-* -->
 <div id="translations" data-translations={JSON.stringify(t)}></div>
 
+<div id="alerta" class="alerta oculto"></div>
+
 <div>
   <form id="contact-form" method="POST" novalidate>
     <input type="hidden" name="lang" value={lang} />
@@ -131,7 +133,7 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
         <!-- value="comercial@worldcomooh.com,marketing@latcom.com,ldevesa@latcom.com" -->
           <option
             
-            value="ldevesa@latcom.com"
+            value="comercial@latcom.com,marketing@latcom.com,ldevesa@latcom.com"
             >comercial</option
           >
           <!-- <option
@@ -160,10 +162,47 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 </div>
 
 <style>
-  /* Estilos básicos */
+  .alerta {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    color: white;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+    font-weight: 500;
+  }
+
+  .alerta.oculto {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .alerta.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Tipos de alerta */
+  .alerta.success {
+    background-color: #4ade80; /* verde */
+  }
+
+  .alerta.error {
+    background-color: #f87171; /* rojo */
+  }
+
+  .alerta.info {
+    background-color: #60a5fa; /* azul */
+  }
 </style>
 
+
+
 <script type="module">
+  //import Swal from 'sweetalert2';
   // Obtener la clave de reCAPTCHA del atributo data-sitekey
   const recaptchaContainer = document.getElementById("recaptcha-container");
   const recaptchaSiteKey = recaptchaContainer?.dataset.sitekey || "default-key";
@@ -211,6 +250,9 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           t.errorName || "Por favor, ingresa tu nombre.";
         formIsValid = false;
       }
+      name.addEventListener("input", function () {
+        document.getElementById("name-error").textContent = ""; // Limpiar mensaje de error al escribir
+      })
 
       // Validar apellido
       if (lastname.value.trim() === "") {
@@ -218,6 +260,9 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           t.errorLastname || "Por favor, ingresa tu apellido.";
         formIsValid = false;
       }
+      lastname.addEventListener("input", function () {
+        document.getElementById("lastname-error").textContent = ""; // Limpiar mensaje de error al escribir
+      })
 
       // Validar telefoneo
       if (phone.value.trim() === "") {
@@ -225,6 +270,9 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           t.errorPhone || "Por favor, ingresa un telefono válido.";
         formIsValid = false;
       }
+      phone.addEventListener("input", function () {
+        document.getElementById("phone-error").textContent = ""; // Limpiar mensaje de error al escribir
+      })
 
       // Validar correo electrónico
       if (email.value.trim() === "" || !validateEmail(email.value)) {
@@ -232,6 +280,9 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           t.errorEmail || "Por favor, ingresa un correo válido.";
         formIsValid = false;
       }
+      email.addEventListener("input", function () {
+        document.getElementById("email-error").textContent = ""; // Limpiar mensaje de error al escribir
+      })
 
       // Validar empresa
       if (company.value.trim() === "") {
@@ -239,6 +290,9 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           t.errorCompany || "Por favor, ingresa tu empresa.";
         formIsValid = false;
       }
+      company.addEventListener("input", function () {
+        document.getElementById("company-error").textContent = ""; // Limpiar mensaje de error al escribir
+      })
 
       // Validar cargo
       if (position.value.trim() === "") {
@@ -246,6 +300,9 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           t.errorPosition || "Por favor, ingresa tu cargo.";
         formIsValid = false;
       }
+      position.addEventListener("input", function () {
+        document.getElementById("position-error").textContent = ""; // Limpiar mensaje de error al escribir
+      })
 
       // Validar país
       if (country.value.trim() === "") {
@@ -253,6 +310,9 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           t.errorCountry || "Por favor, ingresa tu país.";
         formIsValid = false;
       }
+      country.addEventListener("input", function () {
+        document.getElementById("country-error").textContent = ""; // Limpiar mensaje de error al escribir
+      })
 
       // Validar ciudad
       if (city.value.trim() === "") {
@@ -260,6 +320,9 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           t.errorCity || "Por favor, ingresa tu país.";
         formIsValid = false;
       }
+      city.addEventListener("input", function () {
+        document.getElementById("city-error").textContent = ""; // Limpiar mensaje de error al escribir
+      })
 
       // Validar mensaje
       if (message.value.trim() === "") {
@@ -267,6 +330,9 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           t.errorMessage || "El mensaje es obligatorio.";
         formIsValid = false;
       }
+      message.addEventListener("input", function () {
+        document.getElementById("message-error").textContent = ""; // Limpiar mensaje de error al escribir
+      })
 
 
       // Si el formulario es válido, enviarlo
@@ -277,7 +343,7 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
             action: "submit",
           });
           if (!token) {
-            alert(t.recaptchaError);
+            mostrarAlerta(t.recaptchaError, 'error');
             return;
           }
 
@@ -312,20 +378,20 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 
           // Mostrar el mensaje correspondiente al idioma
           if (result.recaptchaError) {
-            alert(messages[lang].recaptchaError);
+            mostrarAlerta(messages[lang].recaptchaError, 'error');
           } else if (result.serverError) {
-            alert(messages[lang].serverError + result.message);
+            mostrarAlerta(messages[lang].serverError + result.message, 'error');
           }
 
           if (result.success) {
-            alert(t.success);
+            mostrarAlerta(t.success, 'success');
             // Vaciar los campos del formulario
             document.getElementById("contact-form").reset();
           } else {
-            alert(t.serverError + result.message);
+            mostrarAlerta(t.serverError + result.message, 'error');
           }
         } catch (error) {
-          alert(t.catchError);
+          mostrarAlerta(t.catchError, 'error');
         } finally {
           // Volver a habilitar el botón de enviar
           submitButton.disabled = false;
@@ -336,6 +402,7 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
         submitButton.disabled = false;
         submitButton.textContent = t.submit || "Enviar";
       }
+
     });
 
   // Función para validar el correo electrónico
@@ -343,4 +410,20 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return regex.test(email);
   }
+
+  function mostrarAlerta(mensaje, tipo = 'info') {
+  const alerta = document.getElementById("alerta");
+  if (!alerta) return;
+
+  // Limpiar clases anteriores
+  alerta.className = 'alerta'; // reset
+  alerta.classList.add('visible', tipo);
+
+  alerta.textContent = mensaje;
+
+  setTimeout(() => {
+    alerta.classList.remove('visible');
+    alerta.classList.add('oculto');
+  }, 4000);
+}
 </script>

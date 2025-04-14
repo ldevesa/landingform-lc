@@ -3,8 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "rimraf node_modules/.vite && astro dev",
+    "build": "rimraf node_modules/.vite && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -20,7 +20,9 @@
     "autoprefixer": "^10.4.21",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sweetalert2": "^11.17.2",
     "tailwindcss": "^4.0.12"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1"
   }
 }
