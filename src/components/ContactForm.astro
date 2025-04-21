@@ -10,6 +10,7 @@ const { lang } = Astro.props; // 🔥 Recibe `lang` correctamente
 // 📌 Corrección: Asegura que `lang` es una de las claves de `translations`
 const t = translations[lang as keyof typeof translations];
 
+const baseEndpoint = import.meta.env.PUBLIC_EMAIL_BASE;
 const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 ---
 
@@ -21,7 +22,7 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 <div id="alerta" class="alerta oculto"></div>
 
 <div>
-  <form id="contact-form" method="POST" novalidate>
+  <form id="contact-form" method="POST" novalidate data-baseemailendpoint={baseEndpoint}>
     <input type="hidden" name="lang" value={lang} />
     <div class="pb-4">
       <h2 class="text-4xl text-white font-semibold">{t.formTitle}</h2>
@@ -132,6 +133,7 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
         >
         <!-- value="comercial@worldcomooh.com,marketing@latcom.com,ldevesa@latcom.com" -->
           <option
+            
             value="comercial@latcom.com,marketing@latcom.com,ldevesa@latcom.com"
             >comercial</option
           >
@@ -346,6 +348,14 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
             return;
           }
 
+          // Obtener la URL del endpoint desde el atributo `data-api-url` del formulario
+          const form = document.getElementById("contact-form");
+          const baseEndPoint = form?.getAttribute("data-baseemailendpoint");
+          const plan = 'plan1'
+          const emailEndPoint = `${baseEndPoint}${plan}/server/send-email.php`;
+
+          //console.log('🔄 Enviando datos al endpoint:', emailEndPoint);
+
           //console.log("Token generado:", token); // 🔍 Verificar en consola
 
           // Crear FormData y agregar el token
@@ -354,14 +364,14 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           );
           formData.append("recaptcha-token", token);
 
-          //console.log("Enviando datos al servidor...");
+          console.log("Enviando datos al servidor...");
 
           /* console.log("FormData antes de enviar:");
           for (let pair of formData.entries()) {
             console.log(pair[0] + ": " + pair[1]);
           } */
 
-          const response = await fetch("/landingform/server/send-email.php", {
+          const response = await fetch(emailEndPoint, {
             method: "POST",
             /* headers: {
               "Content-Type": "application/x-www-form-urlencoded",
@@ -371,8 +381,13 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 
           //console.log("Respuesta sin procesar:", response); // 🔍 Ver si llega algo
 
+          // Verificar si la respuesta fue exitosa
+          if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+          }
+
           const result = await response.json();
-          //console.log("Respuesta del servidor:", result);
+          console.log("Respuesta del servidor:", result);
 
 
           // Mostrar el mensaje correspondiente al idioma
@@ -390,6 +405,7 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
             mostrarAlerta(t.serverError + result.message, 'error');
           }
         } catch (error) {
+          console.error("Error al enviar el formulario:", error);
           mostrarAlerta(t.catchError, 'error');
         } finally {
           // Volver a habilitar el botón de enviar

@@ -71,6 +71,10 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 1. Se instala con composer.json usando el comando composer install. Esto crea la carpeta vendor con phpmailer y dotenv.
 2. Se instala el repo de astro con npm install
 3. Se configura segun empresa
+4. Se carga un form integro por carpeta segun plan, cambiando el archivo astro en base: "/landingform/plan1/",
+5. En ContactForm.astro cambiar la constante const plan = 'plan1'
+6. El archivo vendor y archivo .env van en la raiz
+6. hacer nuevo build
 
 Se usa para las dos empresas, LC y WC. 
 Tiene archivo robots.txt y heades para no ser indexado.

@@ -1,7 +1,17 @@
 <?php
-file_put_contents(__DIR__ . "/debug.log", "POST DATA: " . print_r($_POST, true) . "\n", FILE_APPEND);
-file_put_contents(__DIR__ . "/lang-debug.log", "LANG POST: " . ($_POST['lang'] ?? 'no recibido') . "\n", FILE_APPEND);
+// Agregar el encabezado CORS para permitir solicitudes desde cualquier origen
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 
+// Si es una solicitud pre-vuelo (OPTIONS), responde rápidamente
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit(0); // Finaliza la solicitud
+}
+
+
+//file_put_contents(__DIR__ . "/debug.log", "POST DATA: " . print_r($_POST, true) . "\n", FILE_APPEND);
+//file_put_contents(__DIR__ . "/lang-debug.log", "LANG POST: " . ($_POST['lang'] ?? 'no recibido') . "\n", FILE_APPEND);
 
 // Habilitar reporte de errores
 ini_set('display_errors', 1);
@@ -9,14 +19,14 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Incluir PHPMailer y Dotenv
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Dotenv\Dotenv;
 
 // Cargar variables de entorno
-$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../..');
 $dotenv->load();
 
 // ✅ Validar reCAPTCHA antes de procesar los datos
@@ -140,7 +150,7 @@ try {
     $mail->Port = $_ENV['SMTP_PORT'];
 
     // Remitente
-    $mail->setFrom($_ENV['SMTP_USER'], 'Latcom');
+    $mail->setFrom($_ENV['SMTP_USER'], 'Worldcom');
 
     // Agregar múltiples destinatarios
     foreach ($validRecipients as $recipient) {
@@ -149,7 +159,7 @@ try {
 
     // Contenido del correo
     $mail->isHTML(true);
-    $mail->Subject = 'Latcom - Contacto desde newsletters';
+    $mail->Subject = 'Worldcom - Contacto desde newsletters';
     $titles = [
         'es' => 'Título campaña',
         'en' => 'Campaign title',
@@ -161,7 +171,7 @@ try {
         <div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 30px;">
             <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
                 <div style="text-align: center; margin-bottom: 20px; padding: 20px; background-color: #002646;">
-                    <img src="https://latcom.com/landingform/assets/latcom.png" alt="Latcom" style="max-width: 200px;">
+                    <img src="https://worldcomooh.com/landingform/plan1/assets/worldcom.png" alt="worldcom" style="max-width: 200px;">
                 </div>
                 <h2 style="color: #333; text-align: center;">' . $title . '</h2>
                 <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
