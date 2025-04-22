@@ -26,7 +26,7 @@ use PHPMailer\PHPMailer\Exception;
 use Dotenv\Dotenv;
 
 // Cargar variables de entorno
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../..');
+$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
 // ✅ Validar reCAPTCHA antes de procesar los datos
@@ -150,7 +150,7 @@ try {
     $mail->Port = $_ENV['SMTP_PORT'];
 
     // Remitente
-    $mail->setFrom($_ENV['SMTP_USER'], 'Worldcom');
+    $mail->setFrom($_ENV['SMTP_USER'], 'Latcom');
 
     // Agregar múltiples destinatarios
     foreach ($validRecipients as $recipient) {
@@ -159,7 +159,7 @@ try {
 
     // Contenido del correo
     $mail->isHTML(true);
-    $mail->Subject = 'Worldcom - Contacto desde newsletters';
+    $mail->Subject = 'Latcom - Contacto desde newsletters';
     $titles = [
         'es' => 'Título campaña',
         'en' => 'Campaign title',
@@ -171,7 +171,7 @@ try {
         <div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 30px;">
             <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
                 <div style="text-align: center; margin-bottom: 20px; padding: 20px; background-color: #002646;">
-                    <img src="https://worldcomooh.com/landingform/plan1/assets/worldcom.png" alt="worldcom" style="max-width: 200px;">
+                    <img src="https://latcom.com/landingform/plan1/assets/latcom.png" alt="Latcom" style="max-width: 200px;">
                 </div>
                 <h2 style="color: #333; text-align: center;">' . $title . '</h2>
                 <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">

@@ -203,7 +203,6 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 
 
 <script type="module">
-  //import Swal from 'sweetalert2';
   // Obtener la clave de reCAPTCHA del atributo data-sitekey
   const recaptchaContainer = document.getElementById("recaptcha-container");
   const recaptchaSiteKey = recaptchaContainer?.dataset.sitekey || "default-key";
@@ -351,8 +350,7 @@ const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
           // Obtener la URL del endpoint desde el atributo `data-api-url` del formulario
           const form = document.getElementById("contact-form");
           const baseEndPoint = form?.getAttribute("data-baseemailendpoint");
-          const plan = 'plan1'
-          const emailEndPoint = `${baseEndPoint}${plan}/server/send-email.php`;
+          const emailEndPoint = `${baseEndPoint}`;
 
           //console.log('🔄 Enviando datos al endpoint:', emailEndPoint);
 
