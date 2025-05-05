@@ -9,10 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0); // Finaliza la solicitud
 }
 
-
-//file_put_contents(__DIR__ . "/debug.log", "POST DATA: " . print_r($_POST, true) . "\n", FILE_APPEND);
-//file_put_contents(__DIR__ . "/lang-debug.log", "LANG POST: " . ($_POST['lang'] ?? 'no recibido') . "\n", FILE_APPEND);
-
 // Habilitar reporte de errores
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -28,6 +24,40 @@ use Dotenv\Dotenv;
 // Cargar variables de entorno
 $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
+
+$messages = [
+    'es' => [
+        'from_email_invalid' => 'La dirección de correo del remitente no es válida: ',
+        'missing_recaptcha' => 'Falta el token de reCAPTCHA.',
+        'invalid_recaptcha' => 'No se pudo verificar el reCAPTCHA.',
+        'no_recipients' => 'No se seleccionó ningún destinatario.',
+        'invalid_recipients' => 'Ninguna dirección válida seleccionada.',
+        'success' => 'El mensaje ha sido enviado con éxito.',
+        'send_error' => 'Hubo un error al enviar el mensaje.',
+    ],
+    'en' => [
+        'from_email_invalid' => 'The sender email address is not valid: ',
+        'missing_recaptcha' => 'Missing reCAPTCHA token.',
+        'invalid_recaptcha' => 'reCAPTCHA verification failed.',
+        'no_recipients' => 'No recipient selected.',
+        'invalid_recipients' => 'No valid recipient address selected.',
+        'success' => 'Message sent successfully.',
+        'send_error' => 'There was an error sending the message.',
+    ],
+    'pt' => [
+        'from_email_invalid' => 'O endereço de e-mail do remetente não é válido: ',
+        'missing_recaptcha' => 'Falta o token do reCAPTCHA.',
+        'invalid_recaptcha' => 'Não foi possível verificar o reCAPTCHA.',
+        'no_recipients' => 'Nenhum destinatário selecionado.',
+        'invalid_recipients' => 'Nenhum endereço de destinatário válido selecionado.',
+        'success' => 'A mensagem foi enviada com sucesso.',
+        'send_error' => 'Houve um erro ao enviar a mensagem.',
+    ]
+];
+
+// Idioma recibido
+$lang = $_POST['lang'] ?? 'es'; // español por defecto
+$msg = $messages[$lang] ?? $messages['es']; // fallback al español
 
 // ✅ Validar reCAPTCHA antes de procesar los datos
 $secretKey = $_ENV['SECRET_RECAPTCHA_SITE_KEY'];
@@ -104,39 +134,6 @@ try {
     $city = htmlspecialchars($_POST['city'] ?? '');
     $message = htmlspecialchars($_POST['message'] ?? '');
 
-    $lang = $_POST['lang'] ?? 'es'; // español por defecto
-
-    $messages = [
-        'es' => [
-            'from_email_invalid' => 'La dirección de correo del remitente no es válida: ',
-            'missing_recaptcha' => 'Falta el token de reCAPTCHA.',
-            'invalid_recaptcha' => 'No se pudo verificar el reCAPTCHA.',
-            'no_recipients' => 'No se seleccionó ningún destinatario.',
-            'invalid_recipients' => 'Ninguna dirección válida seleccionada.',
-            'success' => 'El mensaje ha sido enviado con éxito.',
-            'send_error' => 'Hubo un error al enviar el mensaje.',
-        ],
-        'en' => [
-            'from_email_invalid' => 'The sender email address is not valid: ',
-            'missing_recaptcha' => 'Missing reCAPTCHA token.',
-            'invalid_recaptcha' => 'reCAPTCHA verification failed.',
-            'no_recipients' => 'No recipient selected.',
-            'invalid_recipients' => 'No valid recipient address selected.',
-            'success' => 'Message sent successfully.',
-            'send_error' => 'There was an error sending the message.',
-        ],
-        'pt' => [
-            'from_email_invalid' => 'O endereço de e-mail do remetente não é válido: ',
-            'missing_recaptcha' => 'Falta o token do reCAPTCHA.',
-            'invalid_recaptcha' => 'Não foi possível verificar o reCAPTCHA.',
-            'no_recipients' => 'Nenhum destinatário selecionado.',
-            'invalid_recipients' => 'Nenhum endereço de destinatário válido selecionado.',
-            'success' => 'A mensagem foi enviada com sucesso.',
-            'send_error' => 'Houve um erro ao enviar a mensagem.',
-        ]
-    ];
-
-    $msg = $messages[$lang] ?? $messages['es']; // fallback al español
 
 
     // Crear instancia de PHPMailer
@@ -171,7 +168,7 @@ try {
         <div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 30px;">
             <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
                 <div style="text-align: center; margin-bottom: 20px; padding: 20px; background-color: #002646;">
-                    <img src="https://latcom.com/landingform/plan1/assets/latcom.png" alt="Latcom" style="max-width: 200px;">
+                    <img src="https://latcom.com/landingform/plan2/assets/latcom.png" alt="Latcom" style="max-width: 200px;">
                 </div>
                 <h2 style="color: #333; text-align: center;">' . $title . '</h2>
                 <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
