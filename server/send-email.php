@@ -158,9 +158,9 @@ try {
     $mail->isHTML(true);
     $mail->Subject = 'Latcom - Contacto desde newsletters';
     $titles = [
-        'es' => 'Título campaña',
-        'en' => 'Campaign title',
-        'pt' => 'Título campanha'
+        'es' => 'Título campaña P3',
+        'en' => 'Campaign title P3',
+        'pt' => 'Título campanha P3'
     ];
     
     $title = $titles[$lang] ?? $titles['es'];

@@ -72,9 +72,10 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 2. Se instala el repo de astro con npm install
 3. Se configura segun empresa
 4. Se carga un form integro por carpeta segun plan, cambiando el archivo astro en base: "/landingform/plan1/",
-5. En ContactForm.astro cambiar la constante const plan = 'plan1'
-6. El archivo vendor y archivo .env van en la raiz
-6. hacer nuevo build
+5. La carpeta del plan debe tener permisos 777.
+6. El archivo server y el archivo archivo .env van dentro de la carpeta de cada plan.
+7. El archivo vendor va en la raiz junto con el favicon.
+8. hacer nuevo build
 
 Se usa para las dos empresas, LC y WC. 
 Tiene archivo robots.txt y heades para no ser indexado.

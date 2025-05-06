@@ -8,7 +8,7 @@ import alpinejs from "@astrojs/alpinejs";
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  base: "/landingform/plan2/",
+  base: "/landingform/plan3/",
   i18n: {
     defaultLocale: "es",
     locales: ["es", "en", "pt"],
